@@ -1,0 +1,21 @@
+name: Quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install environment and hooks
+        run: make setup
+      - name: Check lint, formatting and types
+        run: make check
+      - name: Check commit hooks
+        run: make hooks
+      - name: Run demo
+        run: make demo

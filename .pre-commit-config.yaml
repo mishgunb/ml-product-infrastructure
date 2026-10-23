@@ -1,0 +1,22 @@
+# local/system запускает ровно версии из uv.lock и группы dev.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: Ruff 0.14.0 (lint)
+        entry: sh scripts/uv.sh run --locked ruff check .
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: ruff-format
+        name: Ruff 0.14.0 (format check)
+        entry: sh scripts/uv.sh run --locked ruff format --check .
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: mypy
+        name: mypy 1.18.2 (strict)
+        entry: sh scripts/uv.sh run --locked mypy
+        language: system
+        pass_filenames: false
+        always_run: true

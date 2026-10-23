@@ -1,0 +1,35 @@
+# Python и окружения
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+# Кеши и локальные инструменты
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tools/
+# Данные и артефакты
+/data/
+/artifacts/
+/models/
+/reports/
+*.parquet
+*.csv
+# Секреты
+.env
+.env.*
+!.env.example
+# Ноутбуки с выводом не храним; исходники можно хранить как .py
+*.ipynb
+.ipynb_checkpoints/
+# Редакторы и ОС
+.DS_Store
+.idea/
+.vscode/

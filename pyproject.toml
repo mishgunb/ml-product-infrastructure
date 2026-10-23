@@ -1,0 +1,41 @@
+[project]
+name = "ml-product-infrastructure"
+version = "0.1.0"
+description = "Учебный ML-проект с автоматическими проверками качества кода"
+readme = "README.md"
+requires-python = "==3.12.8"
+dependencies = []
+
+[project.scripts]
+ml-demo = "ml_product_infrastructure.demo:main"
+
+[dependency-groups]
+dev = ["ruff==0.14.0", "mypy==1.18.2", "pre-commit==4.3.0"]
+
+[build-system]
+requires = ["uv_build==0.9.17"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 99
+target-version = "py312"
+extend-exclude = ["data", "artifacts", "notebooks", ".tools"]
+
+[tool.ruff.lint]
+extend-select = ["B", "UP", "I", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "scripts"]
+mypy_path = "src"
+exclude = '(^|/)(\.venv|venv|__pycache__|\.cache|\.mypy_cache|\.ruff_cache|\.tools|build|dist|data|artifacts|notebooks)(/|$)'
+ignore_missing_imports = false
+
+# Только конкретные сторонние пакеты; собственный код проверяется без исключений.
+[[tool.mypy.overrides]]
+module = ["pandas", "pandas.*"]
+ignore_missing_imports = true
