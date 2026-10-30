@@ -4,13 +4,24 @@ version = "0.1.0"
 description = "Учебный ML-проект с автоматическими проверками качества кода"
 readme = "README.md"
 requires-python = "==3.12.8"
-dependencies = []
+dependencies = [
+    "boto3==1.40.70",
+    "numpy==2.3.4",
+    "pillow==12.0.0",
+    "python-dotenv==1.2.1",
+]
 
 [project.scripts]
 ml-demo = "ml_product_infrastructure.demo:main"
 
 [dependency-groups]
-dev = ["ruff==0.14.0", "mypy==1.18.2", "pre-commit==4.3.0"]
+dev = [
+    "ruff==0.14.0",
+    "mypy==1.18.2",
+    "pre-commit==4.3.0",
+    "boto3-stubs[s3]==1.40.70",
+    "pytest==8.4.2",
+]
 
 [build-system]
 requires = ["uv_build==0.9.17"]
@@ -30,7 +41,7 @@ extend-select = ["B", "UP", "I", "SIM"]
 [tool.mypy]
 python_version = "3.12"
 strict = true
-files = ["src", "scripts"]
+files = ["src", "scripts", "tests"]
 mypy_path = "src"
 exclude = '(^|/)(\.venv|venv|__pycache__|\.cache|\.mypy_cache|\.ruff_cache|\.tools|build|dist|data|artifacts|notebooks)(/|$)'
 ignore_missing_imports = false

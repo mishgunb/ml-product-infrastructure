@@ -1,0 +1,11 @@
+{
+  "source_url": "https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz",
+  "source_sha256": "6d958be074577803d12ecdefd02955f39262c83c16fe9348329d7fe0b5c001ce",
+  "raw_key": "raw/cifar-10-python.tar.gz",
+  "raw_path": "data/raw/cifar-10-python.tar.gz",
+  "output_root": "data/processed/cifar10",
+  "version": "v1",
+  "val_size": 5000,
+  "seed": 42,
+  "workers": 16
+}
