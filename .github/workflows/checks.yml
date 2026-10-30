@@ -19,3 +19,12 @@ jobs:
         run: make hooks
       - name: Run demo
         run: make demo
+      - name: Unit tests
+        run: make test
+      - name: Start RustFS and initialize bucket
+        run: make s3-up
+      - name: Real S3 immutability and round-trip tests
+        run: make test-s3
+      - name: Stop containers
+        if: always()
+        run: docker compose down

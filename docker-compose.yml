@@ -1,0 +1,55 @@
+services:
+  s3-permissions:
+    image: busybox:1.37.0
+    user: "0:0"
+    volumes:
+      - s3-data:/data
+      - s3-logs:/logs
+    command: ["sh", "-c", "chown 10001:10001 /data /logs"]
+    restart: "no"
+
+  s3:
+    image: rustfs/rustfs:1.0.4
+    depends_on:
+      s3-permissions:
+        condition: service_completed_successfully
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY_ID:?Run make setup first}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_ACCESS_KEY:?Run make setup first}
+      RUSTFS_ADDRESS: ${RUSTFS_ADDRESS:?Run make setup first}
+      RUSTFS_CONSOLE_ADDRESS: ${RUSTFS_CONSOLE_ADDRESS:?Run make setup first}
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_VOLUMES: /data
+      RUSTFS_OBS_LOG_DIRECTORY: /logs
+    ports:
+      - "${S3_BIND_HOST:?}:${S3_API_PORT:?}:9000"
+      - "${S3_BIND_HOST:?}:${S3_CONSOLE_PORT:?}:9001"
+    volumes:
+      - s3-data:/data
+      - s3-logs:/logs
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "${S3_HEALTHCHECK_URL:?}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+
+  s3-init:
+    build:
+      context: .
+      dockerfile: docker/data.Dockerfile
+    depends_on:
+      s3:
+        condition: service_healthy
+    environment:
+      S3_ENDPOINT_URL: ${S3_INTERNAL_ENDPOINT_URL:?}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?}
+      S3_BUCKET: ${S3_BUCKET:?}
+      S3_REGION: ${S3_REGION:?}
+    restart: "no"
+
+volumes:
+  s3-data:
+  s3-logs:
