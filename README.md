@@ -180,3 +180,6 @@ _locks/processed/cifar10/v1.json
 
 Для ссылок в учебных работах: Alex Krizhevsky, *Learning Multiple Layers of Features
 from Tiny Images*, 2009 (отчёт доступен на официальной странице датасета).
+
+Полный прогон двух версий, идемпотентность, сохранность volumes и независимая проверка
+нормализации зафиксированы в [отчёте ДЗ №2](docs/hw2-verification.md).
