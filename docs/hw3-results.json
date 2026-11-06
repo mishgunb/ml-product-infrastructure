@@ -1,0 +1,611 @@
+{
+  "baseline": {
+    "config": {
+      "data": {
+        "max_train_samples": 10000,
+        "s3_path": "processed/cifar10/v1"
+      },
+      "experiment_name": "cifar10-simple-cnn",
+      "model": {
+        "channels": [
+          16,
+          32
+        ],
+        "hidden": 128,
+        "type": "linear"
+      },
+      "run_name": "baseline-linear-s42-20261106T060251Za55b",
+      "seed": 42,
+      "train": {
+        "batch_size": 128,
+        "epochs": 3,
+        "lr": 0.001,
+        "threads": 2,
+        "weight_decay": 0.0001
+      }
+    },
+    "metrics": {
+      "best_epoch": 2,
+      "best_val": {
+        "accuracy": 0.3536,
+        "loss": 1.877582183074951,
+        "macro_f1": 0.3485988809590817
+      },
+      "container_id": "24a76fcb0a40",
+      "data_s3_path": "processed/cifar10/v1",
+      "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 2.0246113859176638,
+          "val_accuracy": 0.3348,
+          "val_loss": 1.9106371124267578,
+          "val_macro_f1": 0.3230715276674407
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.8550326976776124,
+          "val_accuracy": 0.3536,
+          "val_loss": 1.877582183074951,
+          "val_macro_f1": 0.3485988809590817
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.8021257122039795,
+          "val_accuracy": 0.3362,
+          "val_loss": 1.9301393501281738,
+          "val_macro_f1": 0.3287640686909345
+        }
+      ],
+      "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+      "mlflow_run_id": "d42c947642b141f5bf290801c8ce52a3",
+      "run_name": "baseline-linear-s42-20261106T060251Za55b",
+      "selection_basis": "val_loss",
+      "test": {
+        "accuracy": 0.3432,
+        "loss": 1.8881242351531982,
+        "macro_f1": 0.33828108581800476
+      },
+      "test_evaluations": 1,
+      "training_seconds": 1.152116640994791
+    }
+  },
+  "final": {
+    "config": {
+      "data": {
+        "max_train_samples": null,
+        "s3_path": "processed/cifar10/v1"
+      },
+      "experiment_name": "cifar10-simple-cnn",
+      "model": {
+        "channels": [
+          16,
+          32
+        ],
+        "hidden": 128,
+        "type": "simple_cnn"
+      },
+      "run_name": "selected-lr0.003-bs64-s42-20261106T060251Za55b",
+      "seed": 42,
+      "train": {
+        "batch_size": 64,
+        "epochs": 8,
+        "lr": 0.003,
+        "threads": 2,
+        "weight_decay": 0.0001
+      }
+    },
+    "metrics": {
+      "best_epoch": 5,
+      "best_val": {
+        "accuracy": 0.6808,
+        "loss": 0.9296545387268066,
+        "macro_f1": 0.6796723348183565
+      },
+      "container_id": "356f426a721e",
+      "data_s3_path": "processed/cifar10/v1",
+      "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.358402930937873,
+          "val_accuracy": 0.605,
+          "val_loss": 1.1140775247573853,
+          "val_macro_f1": 0.598423003937486
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.0107008797751533,
+          "val_accuracy": 0.6282,
+          "val_loss": 1.0733493843078614,
+          "val_macro_f1": 0.6228113235662847
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.8834447556177775,
+          "val_accuracy": 0.6512,
+          "val_loss": 1.0119705203056335,
+          "val_macro_f1": 0.6443067969529737
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.8051279911253187,
+          "val_accuracy": 0.6762,
+          "val_loss": 0.9544935965538025,
+          "val_macro_f1": 0.6766664033182945
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.7348270275751749,
+          "val_accuracy": 0.6808,
+          "val_loss": 0.9296545387268066,
+          "val_macro_f1": 0.6796723348183565
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.6684360645771027,
+          "val_accuracy": 0.6746,
+          "val_loss": 0.9747666519165039,
+          "val_macro_f1": 0.674974318162578
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.6115662827120887,
+          "val_accuracy": 0.6846,
+          "val_loss": 0.9802109587669372,
+          "val_macro_f1": 0.6832180274330326
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.5661840371449789,
+          "val_accuracy": 0.675,
+          "val_loss": 1.0418135848999024,
+          "val_macro_f1": 0.6721725093020876
+        }
+      ],
+      "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+      "mlflow_run_id": "45b59de7abc2432087401886a7ac992b",
+      "run_name": "selected-lr0.003-bs64-s42-20261106T060251Za55b",
+      "selection_basis": "val_loss",
+      "test": {
+        "accuracy": 0.6745,
+        "loss": 0.9622569783210755,
+        "macro_f1": 0.6737009943333252
+      },
+      "test_evaluations": 1,
+      "training_seconds": 192.8192871779902
+    }
+  },
+  "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+  "grid": [
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.0003-bs64-s42-20261106T060251Za55b-1",
+        "seed": 42,
+        "train": {
+          "batch_size": 64,
+          "epochs": 3,
+          "lr": 0.0003,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 3,
+        "best_val": {
+          "accuracy": 0.4902,
+          "loss": 1.4149785758972169,
+          "macro_f1": 0.48591513636161887
+        },
+        "container_id": "c0da32be78d6",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 1.9094383874893188,
+            "val_accuracy": 0.4068,
+            "val_loss": 1.6758439876556397,
+            "val_macro_f1": 0.39385601976761764
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.567175883293152,
+            "val_accuracy": 0.462,
+            "val_loss": 1.506029549407959,
+            "val_macro_f1": 0.45571783310609815
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.4220323947906495,
+            "val_accuracy": 0.4902,
+            "val_loss": 1.4149785758972169,
+            "val_macro_f1": 0.48591513636161887
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "a391fa4025c3414a9bbd6f7680807725",
+        "run_name": "cnn-lr0.0003-bs64-s42-20261106T060251Za55b-1",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.4908,
+          "loss": 1.418686820411682,
+          "macro_f1": 0.48497789715394307
+        },
+        "test_evaluations": 1,
+        "training_seconds": 19.88099627898191
+      }
+    },
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.001-bs64-s42-20261106T060251Za55b-2",
+        "seed": 42,
+        "train": {
+          "batch_size": 64,
+          "epochs": 3,
+          "lr": 0.001,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 3,
+        "best_val": {
+          "accuracy": 0.5362,
+          "loss": 1.2791440773010254,
+          "macro_f1": 0.5400494401946175
+        },
+        "container_id": "de94c47ab920",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 1.7457539682388306,
+            "val_accuracy": 0.4632,
+            "val_loss": 1.502902279663086,
+            "val_macro_f1": 0.4487830615948297
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.3765920490264894,
+            "val_accuracy": 0.5286,
+            "val_loss": 1.3242752620697023,
+            "val_macro_f1": 0.5240236161425844
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.232476588821411,
+            "val_accuracy": 0.5362,
+            "val_loss": 1.2791440773010254,
+            "val_macro_f1": 0.5400494401946175
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "5df831d0f1e844b5b8b4a94c0c5133eb",
+        "run_name": "cnn-lr0.001-bs64-s42-20261106T060251Za55b-2",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.5438,
+          "loss": 1.2741153448104858,
+          "macro_f1": 0.5471413744339292
+        },
+        "test_evaluations": 1,
+        "training_seconds": 19.50681353698019
+      }
+    },
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.003-bs64-s42-20261106T060251Za55b-3",
+        "seed": 42,
+        "train": {
+          "batch_size": 64,
+          "epochs": 3,
+          "lr": 0.003,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 2,
+        "best_val": {
+          "accuracy": 0.5578,
+          "loss": 1.2470636880874635,
+          "macro_f1": 0.5554291832768588
+        },
+        "container_id": "1dd72be33ed3",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 1.68053311958313,
+            "val_accuracy": 0.4884,
+            "val_loss": 1.4064223461151124,
+            "val_macro_f1": 0.4811066269000103
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.2859848442077637,
+            "val_accuracy": 0.5578,
+            "val_loss": 1.2470636880874635,
+            "val_macro_f1": 0.5554291832768588
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.0780511180877685,
+            "val_accuracy": 0.5668,
+            "val_loss": 1.2487937839508056,
+            "val_macro_f1": 0.568915403083102
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "7ae83640c5ca47b2bb056ed958d27225",
+        "run_name": "cnn-lr0.003-bs64-s42-20261106T060251Za55b-3",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.5586,
+          "loss": 1.2466525665283203,
+          "macro_f1": 0.556284215397963
+        },
+        "test_evaluations": 1,
+        "training_seconds": 18.558356169989565
+      }
+    },
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.0003-bs128-s42-20261106T060251Za55b-4",
+        "seed": 42,
+        "train": {
+          "batch_size": 128,
+          "epochs": 3,
+          "lr": 0.0003,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 3,
+        "best_val": {
+          "accuracy": 0.4548,
+          "loss": 1.5285330741882324,
+          "macro_f1": 0.45182584325072206
+        },
+        "container_id": "d17cb6662059",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 2.0045343189239504,
+            "val_accuracy": 0.3698,
+            "val_loss": 1.8001468048095703,
+            "val_macro_f1": 0.3646472724472454
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.6794017210006713,
+            "val_accuracy": 0.4316,
+            "val_loss": 1.6069996809005738,
+            "val_macro_f1": 0.42347879882061834
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.5181022083282472,
+            "val_accuracy": 0.4548,
+            "val_loss": 1.5285330741882324,
+            "val_macro_f1": 0.45182584325072206
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "0ef53ea571a640e295c433147a642a76",
+        "run_name": "cnn-lr0.0003-bs128-s42-20261106T060251Za55b-4",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.4573,
+          "loss": 1.5251082426071167,
+          "macro_f1": 0.4519083344754645
+        },
+        "test_evaluations": 1,
+        "training_seconds": 18.56145277500036
+      }
+    },
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.001-bs128-s42-20261106T060251Za55b-5",
+        "seed": 42,
+        "train": {
+          "batch_size": 128,
+          "epochs": 3,
+          "lr": 0.001,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 3,
+        "best_val": {
+          "accuracy": 0.5058,
+          "loss": 1.3759122573852538,
+          "macro_f1": 0.5009304686725014
+        },
+        "container_id": "a7610fd034ca",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 1.8223045658111572,
+            "val_accuracy": 0.4268,
+            "val_loss": 1.6052811782836913,
+            "val_macro_f1": 0.42546457501453283
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.4675537864685058,
+            "val_accuracy": 0.497,
+            "val_loss": 1.406652261352539,
+            "val_macro_f1": 0.48954988007282374
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.3116457885742188,
+            "val_accuracy": 0.5058,
+            "val_loss": 1.3759122573852538,
+            "val_macro_f1": 0.5009304686725014
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "888146955d2e434888ed2e6783cb621a",
+        "run_name": "cnn-lr0.001-bs128-s42-20261106T060251Za55b-5",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.505,
+          "loss": 1.3835320667266846,
+          "macro_f1": 0.500487613044469
+        },
+        "test_evaluations": 1,
+        "training_seconds": 17.28067222799291
+      }
+    },
+    {
+      "config": {
+        "data": {
+          "max_train_samples": 10000,
+          "s3_path": "processed/cifar10/v1"
+        },
+        "experiment_name": "cifar10-simple-cnn",
+        "model": {
+          "channels": [
+            16,
+            32
+          ],
+          "hidden": 128,
+          "type": "simple_cnn"
+        },
+        "run_name": "cnn-lr0.003-bs128-s42-20261106T060251Za55b-6",
+        "seed": 42,
+        "train": {
+          "batch_size": 128,
+          "epochs": 3,
+          "lr": 0.003,
+          "threads": 2,
+          "weight_decay": 0.0001
+        }
+      },
+      "metrics": {
+        "best_epoch": 3,
+        "best_val": {
+          "accuracy": 0.5526,
+          "loss": 1.2565994342803954,
+          "macro_f1": 0.5524967869391565
+        },
+        "container_id": "1c488354c37b",
+        "data_s3_path": "processed/cifar10/v1",
+        "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+        "history": [
+          {
+            "epoch": 1,
+            "train_loss": 1.7168830490112306,
+            "val_accuracy": 0.4472,
+            "val_loss": 1.49752442779541,
+            "val_macro_f1": 0.4324157685610297
+          },
+          {
+            "epoch": 2,
+            "train_loss": 1.3311212984085083,
+            "val_accuracy": 0.5296,
+            "val_loss": 1.3005641830444337,
+            "val_macro_f1": 0.5259198235800793
+          },
+          {
+            "epoch": 3,
+            "train_loss": 1.1557337575912476,
+            "val_accuracy": 0.5526,
+            "val_loss": 1.2565994342803954,
+            "val_macro_f1": 0.5524967869391565
+          }
+        ],
+        "manifest_sha256": "be889417dd547fb8a9539b52ac33c7a7181b8da5c83277c3a5f9bba93332acdb",
+        "mlflow_run_id": "d88f020091f54bcf9c12ed8c548a158c",
+        "run_name": "cnn-lr0.003-bs128-s42-20261106T060251Za55b-6",
+        "selection_basis": "val_loss",
+        "test": {
+          "accuracy": 0.5524,
+          "loss": 1.2677376167297363,
+          "macro_f1": 0.5513515487793261
+        },
+        "test_evaluations": 1,
+        "training_seconds": 17.74692883400712
+      }
+    }
+  ],
+  "selected_grid_run": "cnn-lr0.003-bs64-s42-20261106T060251Za55b-3",
+  "selection_basis": "minimum grid best_val.loss; test ignored",
+  "suite_id": "20261106T060251Za55b"
+}
