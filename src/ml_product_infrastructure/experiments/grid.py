@@ -70,8 +70,22 @@ def choose_best(results: list[RunResult]) -> RunResult:
 
 
 def repository_head() -> str:
-    if subprocess.check_output(["git", "status", "--porcelain"], text=True).strip():
-        raise ValueError("Закоммитьте изменения перед сборкой обучающего образа")
+    changed = subprocess.check_output(
+        ["git", "diff", "HEAD", "--name-only"], text=True
+    ).splitlines()
+    untracked = subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard"], text=True
+    ).splitlines()
+    # Полный конфиг сохраняется в трекер: его можно менять без коммита.
+    # Код и зависимости должны соответствовать git-коммиту образа.
+    runtime_files = {"pyproject.toml", "uv.lock", "Dockerfile", "docker-compose.yml"}
+    dirty_code = [
+        name
+        for name in [*changed, *untracked]
+        if name in runtime_files or name.startswith(("src/", "scripts/", "docker/"))
+    ]
+    if dirty_code:
+        raise ValueError(f"Закоммитьте изменения кода/окружения перед сборкой: {dirty_code}")
     return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
 

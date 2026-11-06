@@ -83,3 +83,27 @@ def test_model_has_ten_outputs_for_rgb_cifar(kind: str) -> None:
     model = Classifier(ModelConfig(kind, (4, 8), 16))
     output = cast(Tensor, model(torch.zeros((2, 3, 32, 32))))
     assert output.shape == (2, 10)
+
+
+def test_config_can_change_without_commit_but_runtime_code_cannot(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from ml_product_infrastructure.experiments.grid import repository_head
+
+    changed = ["configs/train.json"]
+
+    def output(command: list[str], text: bool) -> str:
+        assert text
+        if command[1] == "diff":
+            return "\n".join(changed)
+        if command[1] == "ls-files":
+            return ""
+        return "a" * 40
+
+    monkeypatch.setattr(
+        "ml_product_infrastructure.experiments.grid.subprocess.check_output", output
+    )
+    assert repository_head() == "a" * 40
+    changed.append("src/ml_product_infrastructure/experiments/train.py")
+    with pytest.raises(ValueError, match="Закоммитьте"):
+        repository_head()
