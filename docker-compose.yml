@@ -50,6 +50,82 @@ services:
       S3_REGION: ${S3_REGION:?}
     restart: "no"
 
+  mlflow-init:
+    build:
+      context: .
+      dockerfile: docker/data.Dockerfile
+    entrypoint: ["/app/.venv/bin/python", "-m", "ml_product_infrastructure.experiments.init_store"]
+    depends_on:
+      s3:
+        condition: service_healthy
+    environment:
+      S3_ENDPOINT_URL: ${S3_INTERNAL_ENDPOINT_URL:?}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?}
+      S3_BUCKET: ${S3_BUCKET:?}
+      S3_REGION: ${S3_REGION:?}
+      MLFLOW_BUCKET: ${MLFLOW_BUCKET:?Run make setup first}
+    restart: "no"
+
+  mlflow:
+    build:
+      context: .
+      dockerfile: docker/mlflow.Dockerfile
+    depends_on:
+      mlflow-init:
+        condition: service_completed_successfully
+    environment:
+      MLFLOW_S3_ENDPOINT_URL: ${S3_INTERNAL_ENDPOINT_URL:?}
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?}
+      AWS_DEFAULT_REGION: ${S3_REGION:?}
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+      MLFLOW_SERVER_ALLOWED_HOSTS: ${MLFLOW_SERVER_ALLOWED_HOSTS:?}
+    command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--workers", "1", "--backend-store-uri", "sqlite:////mlflow/mlflow.db", "--serve-artifacts", "--artifacts-destination", "s3://${MLFLOW_BUCKET:?}/"]
+    volumes:
+      - mlflow-db:/mlflow
+    ports:
+      - "${MLFLOW_BIND_HOST:?}:${MLFLOW_PORT:?}:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+
+  trainer:
+    profiles: [training]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${TRAINING_GIT_COMMIT:-}
+    depends_on:
+      s3:
+        condition: service_healthy
+      mlflow:
+        condition: service_healthy
+    environment:
+      S3_ENDPOINT_URL: ${S3_INTERNAL_ENDPOINT_URL:?}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?}
+      S3_BUCKET: ${S3_BUCKET:?}
+      S3_REGION: ${S3_REGION:?}
+      MLFLOW_TRACKING_URI: ${MLFLOW_INTERNAL_TRACKING_URI:?}
+      TRAIN_CACHE_DIR: /cache
+      TRAIN_OUTPUT_DIR: /runs
+    volumes:
+      - train-cache:/cache
+      - train-runs:/runs
+      - .:/workspace:ro
+    init: true
+    restart: "no"
+
 volumes:
   s3-data:
   s3-logs:
+  mlflow-db:
+  train-cache:
+  train-runs:
