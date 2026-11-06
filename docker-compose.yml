@@ -82,6 +82,8 @@ services:
       AWS_REQUEST_CHECKSUM_CALCULATION: when_required
       AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
       MLFLOW_SERVER_ALLOWED_HOSTS: ${MLFLOW_SERVER_ALLOWED_HOSTS:?}
+      MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD: ${MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD:?Run make setup}
+      MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD: ${MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD:?Run make setup}
     command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--workers", "1", "--backend-store-uri", "sqlite:////mlflow/mlflow.db", "--serve-artifacts", "--artifacts-destination", "s3://${MLFLOW_BUCKET:?}/"]
     volumes:
       - mlflow-db:/mlflow
@@ -114,6 +116,8 @@ services:
       S3_BUCKET: ${S3_BUCKET:?}
       S3_REGION: ${S3_REGION:?}
       MLFLOW_TRACKING_URI: ${MLFLOW_INTERNAL_TRACKING_URI:?}
+      MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD: ${MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD:?}
+      MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD: ${MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD:?}
       TRAIN_CACHE_DIR: /cache
       TRAIN_OUTPUT_DIR: /runs
     volumes:

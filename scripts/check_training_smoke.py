@@ -1,9 +1,11 @@
 """Проверить модель в S3 и метрики/артефакты реального MLflow после smoke-запуска."""
 
+import csv
 import json
 import os
 import tempfile
 from pathlib import Path
+from urllib.request import urlopen
 
 import torch
 from mlflow import MlflowClient
@@ -25,7 +27,12 @@ def main() -> None:
     best = min(history, key=lambda row: number(mapping(row)["val_loss"]))
     assert result["best_epoch"] == mapping(best)["epoch"]
     assert result["test_evaluations"] == 1 and result["selection_basis"] == "val_loss"
-    client = MlflowClient(tracking_uri=os.environ["MLFLOW_TRACKING_URI"])
+    uri = os.environ["MLFLOW_TRACKING_URI"]
+    with urlopen(uri + "/api/3.0/mlflow/server-info", timeout=10) as response:
+        server_info = mapping(json.loads(response.read()))
+    assert server_info["multipart_downloads_enabled"] is False
+    assert server_info["multipart_uploads_enabled"] is False
+    client = MlflowClient(tracking_uri=uri)
     run_id = text(result["mlflow_run_id"])
     run = client.get_run(run_id)
     assert run.info.status == "FINISHED"
@@ -38,8 +45,15 @@ def main() -> None:
     }
     assert run.data.params["data.s3_path"] == cfg.data.s3_path
     with tempfile.TemporaryDirectory() as directory:
-        path = Path(directory) / "model.pt"
+        matrix = Path(client.download_artifacts(run_id, "confusion-val.csv", directory))
+        with matrix.open() as stream:
+            rows = list(csv.reader(stream))
+        assert len(rows) == 11
+        assert sum(int(v) for row in rows[1:] for v in row[1:]) == 10
+        tracker_model = Path(client.download_artifacts(run_id, "model.pt", directory))
+        path = Path(directory) / "s3-model.pt"
         store.download(prefix + "model.pt", path)
+        assert tracker_model.read_bytes() == path.read_bytes()
         checkpoint = torch.load(path, weights_only=True, map_location="cpu")
         assert checkpoint["best_epoch"] == integer(result["best_epoch"])
         assert checkpoint["metadata"]["mean"] == [
