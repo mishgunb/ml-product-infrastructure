@@ -7,9 +7,9 @@ DATA := $(UV) run --no-sync python -m ml_product_infrastructure.dataset
 .PHONY: setup check demo hooks
 
 setup:
-	$(UV) sync --locked --group dev
+	$(UV) sync --locked --group dev --extra train
 	$(UV) run --no-sync pre-commit install
-	@test -f .env || cp .env.example .env
+	$(UV) run --no-sync python scripts/setup_env.py
 
 check:
 	$(UV) run --no-sync ruff check .
@@ -58,3 +58,20 @@ data-publish:
 .PHONY: test-s3
 test-s3:
 	RUN_S3_TESTS=1 $(UV) run --no-sync pytest -q tests/test_s3_integration.py
+
+.PHONY: infra-up infra-down experiments train
+infra-up: s3-up
+	$(COMPOSE) build mlflow
+	$(COMPOSE) up -d --wait mlflow
+	COMPOSE="$(COMPOSE)" $(UV) run --extra train --no-sync python -m ml_product_infrastructure.experiments.grid --build-only
+
+infra-down:
+	$(COMPOSE) --profile training down
+
+experiments: CONFIG = configs/grid.json
+experiments:
+	COMPOSE="$(COMPOSE)" $(UV) run --extra train --no-sync python -m ml_product_infrastructure.experiments.grid --config $(CONFIG)
+
+train: CONFIG = configs/train.json
+train:
+	COMPOSE="$(COMPOSE)" $(UV) run --extra train --no-sync python -m ml_product_infrastructure.experiments.grid --single --config $(CONFIG)

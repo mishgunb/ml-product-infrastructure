@@ -1,0 +1,23 @@
+{
+  "suite_id": "20261106T060251Za55b",
+  "git_commit": "715a6df0867f34e49aa4a4e6b3dec7e6dfb0d3e4",
+  "run_ids": [
+    "d42c947642b141f5bf290801c8ce52a3",
+    "a391fa4025c3414a9bbd6f7680807725",
+    "5df831d0f1e844b5b8b4a94c0c5133eb",
+    "7ae83640c5ca47b2bb056ed958d27225",
+    "0ef53ea571a640e295c433147a642a76",
+    "888146955d2e434888ed2e6783cb621a",
+    "d88f020091f54bcf9c12ed8c548a158c",
+    "45b59de7abc2432087401886a7ac992b"
+  ],
+  "unique_training_containers": 8,
+  "finished_runs": 8,
+  "all_config_parameters_logged": true,
+  "best_checkpoints_and_val_history_match": true,
+  "test_evaluations_per_run": 1,
+  "val_confusion_total_per_run": 5000,
+  "mlflow_s3_bucket": "mlflow",
+  "tracker_models_match_s3_models": true,
+  "selection_basis": "minimum grid best_val.loss; test ignored"
+}

@@ -14,6 +14,12 @@ dependencies = [
 [project.scripts]
 ml-demo = "ml_product_infrastructure.demo:main"
 
+[project.optional-dependencies]
+train = [
+    "mlflow-skinny==3.16.0",
+    "torch==2.9.0",
+]
+
 [dependency-groups]
 dev = [
     "ruff==0.14.0",
@@ -48,5 +54,13 @@ ignore_missing_imports = false
 
 # Только конкретные сторонние пакеты; собственный код проверяется без исключений.
 [[tool.mypy.overrides]]
-module = ["pandas", "pandas.*"]
+module = ["pandas", "pandas.*", "mlflow", "mlflow.*"]
 ignore_missing_imports = true
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]

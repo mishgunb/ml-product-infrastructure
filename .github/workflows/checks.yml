@@ -25,6 +25,14 @@ jobs:
         run: make s3-up
       - name: Real S3 immutability and round-trip tests
         run: make test-s3
+      - name: Build trainer and start MLflow
+        run: make infra-up
+      - name: Prepare tiny isolated training fixture
+        run: sh scripts/uv.sh run --extra train --no-sync python scripts/prepare_training_smoke.py
+      - name: Train two epochs in a real container
+        run: make train CONFIG=.tools/ci-smoke.json
+      - name: Verify real MLflow and model artifacts
+        run: sh scripts/uv.sh run --extra train --no-sync python scripts/check_training_smoke.py
       - name: Stop containers
         if: always()
-        run: docker compose down
+        run: docker compose --profile training down
