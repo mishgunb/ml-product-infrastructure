@@ -7,7 +7,7 @@ DATA := $(UV) run --no-sync python -m ml_product_infrastructure.dataset
 .PHONY: setup check demo hooks
 
 setup:
-	$(UV) sync --locked --group dev --extra train
+	$(UV) sync --locked --group dev --extra train --extra export --extra serve
 	$(UV) run --no-sync pre-commit install
 	$(UV) run --no-sync python scripts/setup_env.py
 
@@ -75,3 +75,25 @@ experiments:
 train: CONFIG = configs/train.json
 train:
 	COMPOSE="$(COMPOSE)" $(UV) run --extra train --no-sync python -m ml_product_infrastructure.experiments.grid --single --config $(CONFIG)
+
+SERVING := $(UV) run --no-sync python -m ml_product_infrastructure.serving
+SERVING_CONFIG ?= configs/serving.json
+SERVING_ARGS ?=
+SERVICE_HOST ?= Linux в Docker, $(shell $(COMPOSE) exec -T triton uname -m), $(shell $(COMPOSE) exec -T triton nproc) логических CPU, клиент и сервис на одной машине
+
+.PHONY: export serve-up verify load-test serve-down
+export:
+	$(SERVING).export --config $(SERVING_CONFIG) $(SERVING_ARGS)
+
+serve-up:
+	test -s model_repository/cifar_cnn/1/model.onnx && test -s artifacts/serving/stats.json
+	$(COMPOSE) --profile serving up -d --wait --build triton prediction-api
+
+verify:
+	$(SERVING).verify --config $(SERVING_CONFIG) $(SERVING_ARGS)
+
+load-test:
+	$(SERVING).load_test --config $(SERVING_CONFIG) --service-host "$(SERVICE_HOST)" $(SERVING_ARGS)
+
+serve-down:
+	$(COMPOSE) --profile training --profile serving down

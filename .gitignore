@@ -19,7 +19,7 @@ htmlcov/
 /data/
 /artifacts/
 /models/
-/reports/
+/model_repository/
 *.parquet
 *.csv
 # Секреты
@@ -33,3 +33,4 @@ htmlcov/
 .DS_Store
 .idea/
 .vscode/
+!/reports/load_test.csv

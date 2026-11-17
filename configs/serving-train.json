@@ -1,0 +1,24 @@
+{
+  "data": {
+    "max_train_samples": null,
+    "s3_path": "processed/cifar10/v1"
+  },
+  "experiment_name": "cifar10-simple-cnn",
+  "model": {
+    "channels": [
+      16,
+      32
+    ],
+    "hidden": 128,
+    "type": "simple_cnn"
+  },
+  "run_name": "selected-lr0.003-bs64-s42-20261106T060251Za55b",
+  "seed": 42,
+  "train": {
+    "batch_size": 64,
+    "epochs": 8,
+    "lr": 0.003,
+    "threads": 2,
+    "weight_decay": 0.0001
+  }
+}

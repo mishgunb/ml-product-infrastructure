@@ -127,6 +127,48 @@ services:
     init: true
     restart: "no"
 
+  triton:
+    profiles: [serving]
+    image: nvcr.io/nvidia/tritonserver:26.09-py3
+    command: ["tritonserver", "--model-repository=/models", "--disable-auto-complete-config"]
+    volumes:
+      - ./model_repository:/models:ro
+    ports:
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8002:8002"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8000/v2/health/ready"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+      start_period: 15s
+    restart: unless-stopped
+
+  prediction-api:
+    profiles: [serving]
+    build:
+      context: .
+      dockerfile: docker/serving.Dockerfile
+    depends_on:
+      triton:
+        condition: service_healthy
+    environment:
+      TRITON_URL: http://triton:8000
+      TRITON_MODEL_NAME: cifar_cnn
+      TRITON_MODEL_VERSION: "1"
+      STATS_PATH: /serving/stats.json
+    volumes:
+      - ./artifacts/serving:/serving:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+    restart: unless-stopped
+
 volumes:
   s3-data:
   s3-logs:

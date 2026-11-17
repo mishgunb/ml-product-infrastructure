@@ -1,0 +1,4 @@
+{
+  "checkpoint": "s3://cifar10/models/cifar10-simple-cnn/selected-lr0.003-bs64-s42-20261106T060251Za55b/model.pt",
+  "dataset": "s3://cifar10/processed/cifar10/v1"
+}
