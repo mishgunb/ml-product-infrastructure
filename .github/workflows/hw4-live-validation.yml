@@ -1,0 +1,77 @@
+name: HW4 Linux validation (temporary)
+on:
+  push:
+    branches: [codex/hw4-live-validation]
+permissions:
+  contents: read
+jobs:
+  triton:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare runner and download pinned Triton
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
+          df -h /
+          docker pull nvcr.io/nvidia/tritonserver:26.09-py3 > /tmp/hw4-triton-pull.log 2>&1 &
+          pull=$!
+          make setup
+          wait "$pull" || { tail -40 /tmp/hw4-triton-pull.log; exit 1; }
+      - name: Reproduce CIFAR-10 v1 and selected training recipe on Linux
+        run: |
+          make infra-up
+          make ingest
+          make data
+          make train CONFIG=configs/serving-train.json
+      - name: Export model, run positive and negative HTTP checks
+        run: |
+          mkdir -p reports
+          make export 2>&1 | tee reports/export.log
+          make serve-up
+          docker compose --profile serving ps
+          curl -fsS http://127.0.0.1:8080/health
+          curl -fsS -F 'file=@data/processed/cifar10/v1/images/test_00000.png' http://127.0.0.1:8080/predict
+          .venv/bin/python - <<'PY'
+          from PIL import Image
+          with Image.open('data/processed/cifar10/v1/images/test_00000.png') as img:
+              img.resize((64, 64)).save('/tmp/hw4.jpg')
+          PY
+          curl -fsS -F 'file=@/tmp/hw4.jpg' http://127.0.0.1:8080/predict
+          test "$(curl -sS -w '%{http_code}' -o /dev/null -F 'file=@README.md' http://127.0.0.1:8080/predict)" = 422
+          touch /tmp/hw4-empty.png
+          test "$(curl -sS -w '%{http_code}' -o /dev/null -F 'file=@/tmp/hw4-empty.png' http://127.0.0.1:8080/predict)" = 400
+      - name: Verify full test and benchmark the real service
+        run: |
+          make verify 2>&1 | tee reports/verify.txt
+          make load-test SERVICE_HOST="Ubuntu в GitHub Actions, Docker на том же runner, x86_64, $(nproc) логических CPU, модель воспроизведена исходным конфигом ДЗ №3"
+      - name: Confirm wrong normalization and upstream failure are detected
+        run: |
+          cp artifacts/serving/stats.json /tmp/hw4-correct-stats.json
+          .venv/bin/python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('artifacts/serving/stats.json')
+          stats = json.loads(path.read_text())
+          stats['mean'] = [0, 0, 0]
+          stats['std'] = [1, 1, 1]
+          path.write_text(json.dumps(stats))
+          PY
+          docker compose --profile serving restart prediction-api
+          curl --fail --silent --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:8080/health
+          if make verify > reports/verify-wrong-stats.txt 2>&1; then exit 1; fi
+          grep -q 'Метрики выходят за пределы допусков' reports/verify-wrong-stats.txt
+          cp /tmp/hw4-correct-stats.json artifacts/serving/stats.json
+          docker compose --profile serving stop triton
+          test "$(curl -sS -w '%{http_code}' -o /dev/null http://127.0.0.1:8080/health)" = 503
+      - name: Collect container logs
+        if: always()
+        run: |
+          mkdir -p reports
+          docker compose --profile serving logs --no-color triton prediction-api > reports/containers.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hw4-serving-results
+          path: reports/
+          retention-days: 3
