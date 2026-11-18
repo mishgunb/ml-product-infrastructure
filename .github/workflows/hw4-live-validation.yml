@@ -7,7 +7,7 @@ permissions:
 jobs:
   triton:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Prepare runner and download pinned Triton
@@ -21,6 +21,8 @@ jobs:
       - name: Reproduce CIFAR-10 v1 and selected training recipe on Linux
         run: |
           make infra-up
+          mkdir -p data/raw
+          curl --fail --location --retry 3 --max-time 180 https://ossci-datasets.s3.amazonaws.com/cifar-10-python.tar.gz -o data/raw/cifar-10-python.tar.gz
           make ingest
           make data
           make train CONFIG=configs/serving-train.json
