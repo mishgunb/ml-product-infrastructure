@@ -6,6 +6,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from urllib.parse import urlparse
 
 from ml_product_infrastructure.dataset.files import ImageRecord, read_annotation, sha256_file
@@ -62,10 +63,15 @@ def manifest(store: S3Store, source: Source) -> tuple[dict[str, str], str]:
 
 
 def checked_download(store: S3Store, uri: str, path: Path, digest: str) -> None:
-    if not path.is_file() or sha256_file(path) != digest:
-        download(store, uri, path)
-    if sha256_file(path) != digest:
-        raise ValueError(f"Неверная контрольная сумма: {uri}")
+    if path.is_file() and sha256_file(path) == digest:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(dir=path.parent) as temporary:
+        stage = Path(temporary) / path.name
+        download(store, uri, stage)
+        if sha256_file(stage) != digest:
+            raise ValueError(f"Неверная контрольная сумма: {uri}")
+        stage.replace(path)
 
 
 def fetch_test_images(
@@ -78,6 +84,8 @@ def fetch_test_images(
         store, f"{source.dataset}/{annotation}", root / annotation, hashes[annotation]
     )
     rows = read_annotation(root / annotation)["images"]
+    if not rows or any(not row["image_id"].startswith("test_") for row in rows):
+        raise ValueError("Ожидалась непустая test-выборка CIFAR-10")
 
     def fetch(row: ImageRecord) -> None:
         name = row["file_name"]

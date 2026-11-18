@@ -89,9 +89,10 @@ def main() -> None:
             (Path("configs/triton.pbtxt"), model_folder / "config.pbtxt"),
             (root / "stats.json", stats),
         ):
-            staged = destination.with_name(destination.name + ".tmp")
-            shutil.copyfile(original, staged)
-            staged.replace(destination)
+            with TemporaryDirectory(dir=destination.parent) as staging:
+                staged = Path(staging) / destination.name
+                shutil.copyfile(original, staged)
+                staged.replace(destination)
     print(f"Готово: {repository}; stats: {stats}")
 
 
