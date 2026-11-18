@@ -87,7 +87,7 @@ export:
 
 serve-up:
 	test -s model_repository/cifar_cnn/1/model.onnx && test -s artifacts/serving/stats.json
-	$(COMPOSE) --profile serving up -d --wait --build triton prediction-api
+	$(COMPOSE) --profile serving up -d --wait --build --force-recreate triton prediction-api
 
 verify:
 	$(SERVING).verify --config $(SERVING_CONFIG) $(SERVING_ARGS)
