@@ -10,19 +10,18 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare runner and download pinned Triton
-        run: |
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
-          df -h /
-          docker pull nvcr.io/nvidia/tritonserver:26.09-py3 > /tmp/hw4-triton-pull.log 2>&1 &
-          pull=$!
-          make setup
-          wait "$pull" || { tail -40 /tmp/hw4-triton-pull.log; exit 1; }
+      - name: Prepare locked environment
+        run: make setup
       - name: Reproduce CIFAR-10 v1 and selected training recipe on Linux
         run: |
           make infra-up
           mkdir -p data/raw
-          curl --fail --location --retry 3 --max-time 180 https://ossci-datasets.s3.amazonaws.com/cifar-10-python.tar.gz -o data/raw/cifar-10-python.tar.gz
+          curl --fail --location --retry 2 --retry-all-errors --connect-timeout 15 --max-time 180 \
+            https://github.com/Digital-Media/cv_data/releases/download/cifar-10/cifar-10-python.tar.gz \
+            -o data/raw/cifar-10-python.tar.gz || \
+          curl --fail --location --retry 2 --retry-all-errors --connect-timeout 15 --max-time 180 \
+            https://cave.cs.toronto.edu/kriz/cifar-10-python.tar.gz \
+            -o data/raw/cifar-10-python.tar.gz
           make ingest
           make data
           make train CONFIG=configs/serving-train.json
@@ -60,7 +59,7 @@ jobs:
           path.write_text(json.dumps(stats))
           PY
           docker compose --profile serving restart prediction-api
-          curl --fail --silent --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:8080/health
+          docker compose --profile serving up -d --wait prediction-api
           if make verify > reports/verify-wrong-stats.txt 2>&1; then exit 1; fi
           grep -q 'Метрики выходят за пределы допусков' reports/verify-wrong-stats.txt
           cp /tmp/hw4-correct-stats.json artifacts/serving/stats.json
@@ -77,3 +76,7 @@ jobs:
           name: hw4-serving-results
           path: reports/
           retention-days: 3
+
+      - name: Stop all containers
+        if: always()
+        run: make serve-down
