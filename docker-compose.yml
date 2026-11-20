@@ -129,7 +129,8 @@ services:
 
   triton:
     profiles: [serving]
-    image: nvcr.io/nvidia/tritonserver:26.09-py3
+    image: giang352001/tritonserverbuild:25.11-cpu@sha256:65e1d25bff51e5b7c39fb58c1e356bc58c6b91ac729914ad1483a783c7eafa9d
+    platform: linux/amd64
     command: ["tritonserver", "--model-repository=/models", "--disable-auto-complete-config"]
     volumes:
       - ./model_repository:/models:ro
