@@ -170,6 +170,28 @@ services:
       retries: 20
     restart: unless-stopped
 
+  demo-ui:
+    profiles: [demo]
+    build:
+      context: .
+      dockerfile: docker/demo.Dockerfile
+    depends_on:
+      prediction-api:
+        condition: service_healthy
+    environment:
+      PREDICTION_API_URL: ${PREDICTION_API_URL:-http://prediction-api:8080}
+      DEMO_ASSETS_PATH: /demo
+    volumes:
+      - ./artifacts/demo:/demo:ro
+    ports:
+      - "127.0.0.1:7860:7860"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:7860/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+    restart: unless-stopped
+
 volumes:
   s3-data:
   s3-logs:

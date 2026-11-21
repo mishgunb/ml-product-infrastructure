@@ -96,4 +96,17 @@ load-test:
 	$(SERVING).load_test --config $(SERVING_CONFIG) --service-host "$(SERVICE_HOST)" $(SERVING_ARGS)
 
 serve-down:
-	$(COMPOSE) --profile training --profile serving down
+	$(COMPOSE) --profile training --profile serving --profile demo down
+
+.PHONY: demo-prepare demo-up demo-down
+demo-prepare:
+	$(UV) run --no-sync python -m ml_product_infrastructure.demo_ui.prepare --config $(SERVING_CONFIG)
+
+demo-up:
+	$(COMPOSE) up -d --wait s3
+	$(MAKE) demo-prepare
+	test -s model_repository/cifar_cnn/1/model.onnx && test -s artifacts/serving/stats.json
+	$(COMPOSE) --profile serving --profile demo up -d --wait --build triton prediction-api demo-ui
+
+demo-down:
+	$(COMPOSE) --profile training --profile serving --profile demo down
