@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>Зрение модели · CIFAR-10</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;450;500;550;600;650;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Зрение модели, главная"><span class="brand-mark" aria-hidden="true"></span>Зрение модели</a>
+      <span class="header-context">CIFAR-10 / интерактивное демо</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <h1 id="page-title">Что увидит<br><span>модель?</span></h1>
+        <p>Загрузите изображение и посмотрите, к какому классу его отнесёт нейросеть. Или начните с одного из примеров ниже.</p>
+      </section>
+
+      <section class="workspace" aria-label="Классификация изображения">
+        <div class="image-panel">
+          <div class="panel-heading"><h2>Ваше изображение</h2><span id="image-dimensions" class="muted"></span></div>
+          <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-label="Загрузить PNG или JPEG. Можно перетащить файл или нажать для выбора." aria-describedby="upload-hint">
+            <div id="upload-placeholder" class="upload-placeholder">
+              <span class="upload-symbol" aria-hidden="true">↑</span>
+              <strong>Перетащите картинку сюда</strong>
+              <span>или нажмите, чтобы выбрать файл</span>
+              <small id="upload-hint">PNG или JPEG · до 5 МиБ</small>
+            </div>
+            <img id="preview" class="preview" alt="Загруженное изображение" hidden>
+            <span id="replace-hint" class="replace-hint" hidden>Нажмите, чтобы заменить</span>
+          </div>
+          <input id="file-input" type="file" accept="image/png,image/jpeg" hidden>
+          <div class="image-caption"><span id="file-name">Изображение появится здесь</span><span>Вход модели 32 × 32 px</span></div>
+        </div>
+
+        <div class="prediction-panel" aria-busy="false" id="prediction-panel">
+          <div class="panel-heading"><h2>Предсказание</h2><span id="request-status" class="request-status" role="status" aria-live="polite">Ожидание изображения</span></div>
+          <div id="empty-result" class="empty-result"><span class="empty-shape" aria-hidden="true"></span><p>Загрузите изображение,<br>чтобы увидеть результат.</p><span>Здесь появятся пять самых вероятных классов.</span></div>
+          <div id="loading-result" class="loading-result" hidden><span class="spinner" aria-hidden="true"></span><p>Модель рассматривает изображение…</p></div>
+          <div id="result" hidden>
+            <p class="result-label">Наиболее вероятный класс</p>
+            <div class="winner"><h3 id="winner-name"></h3><span id="winner-confidence"></span></div>
+            <ol id="probabilities" class="probabilities" aria-label="Пять наиболее вероятных классов"></ol>
+            <div class="model-details"><span>Модель <strong id="model-name"></strong></span><span>Версия <strong id="model-version"></strong></span></div>
+          </div>
+          <div id="error" class="error" role="alert" hidden><strong>Не удалось получить ответ</strong><p id="error-message"></p><button id="retry-prediction" type="button" class="text-button">Попробовать снова <span aria-hidden="true">↗</span></button></div>
+        </div>
+      </section>
+
+      <section class="examples-section" aria-labelledby="examples-title">
+        <div class="section-heading"><h2 id="examples-title">Попробуйте на примерах</h2><span>Из тестовой выборки CIFAR-10</span></div>
+        <div id="examples" class="examples" aria-label="Изображения для быстрого предсказания"></div>
+        <p id="examples-error" class="examples-error" hidden>Не удалось загрузить примеры. Вы можете выбрать своё изображение. <button type="button" id="retry-examples" class="text-button">Повторить</button></p>
+      </section>
+
+      <aside class="model-note" aria-labelledby="note-title">
+        <span class="note-symbol" aria-hidden="true">i</span>
+        <div><h2 id="note-title">Что распознаёт модель</h2><p>Эта CNN обучена на десяти классах CIFAR-10 и видит изображение размером всего 32 × 32 пикселя. Она всегда выбирает один из знакомых классов, даже если на фото человек или другой объект. Confidence показывает уверенность модели в своём выборе и не гарантирует правильный ответ.</p><p id="classes-description" class="classes-description" hidden></p></div>
+      </aside>
+    </main>
+    <footer><span>CIFAR-10 image classifier</span><span>Демо модели из ДЗ №3–4</span></footer>
+  </div>
+</body>
+</html>
